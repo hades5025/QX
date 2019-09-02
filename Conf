@@ -1,0 +1,365 @@
+; 20190902_120033
+
+; 20190810_215735
+
+; 20190802_192006
+
+# Sample Quantumult Configuration
+#
+# Line started with “;” or “#” or “//“ shall be comments.
+# 以 “;” 或 “#” 或 “//“ 开头的行为注释行。
+#
+# SS-URI scheme can be found at https://shadowsocks.org/en/spec/SIP002-URI-Scheme.html
+#
+# Supported server obfs plugin: http(ss), tls(ss), http_simple(ssr), http_post(ssr), tls1.2_ticket_fastauth(ssr), ws(v2ray), wss(v2ray)
+# Supported server ssr protocol plugin: auth_sha1, auth_sha1_v2, auth_sha1_v4, auth_aes128_md5, auth_aes128_sha1, auth_chain_a, auth_chain_b
+#
+# If you deployed server with obfs plugin tls1.2_ticket_auth(ssr), please change it to Quantumult supported plugin tls1.2_ticket_fastauth(ssr).
+# 如果服务端混淆插件设置为 tls1.2_ticket_auth(ssr) 请修改为 tls1.2_ticket_fastauth(ssr) 以便在 Quantumult 上使用。
+#
+# Quantumult uses HEAD method send HTTP request to the server_check_url to test the proxy’s status, the results should be two latencies, the first one is TCP handshake to the proxy server, the second one is the total time that Quantumult successfully received the HTTP response from the server_check_url. The lightning icon means that the TCP fast open is successful. If the server in section [server_local] has its own server_check_url, its own server_check_url will be used instead of the server_check_url in section [general].
+#
+# Quantumult 使用 HTTP HEAD 方法对测试网址（server_check_url）进行网页响应性测试（测试结果为通过该节点访问此网页获得响应所需要的时间），来确认节点的可用性。
+# Quantumult 界面中的延迟测试方式均为网页响应性测试，显示的最终延迟均为通过对应节点访问测试网页获得响应所需要时间。
+#
+# The network_check_url is private param, not open to the public right now.
+#
+# The dns_exclusion_list contains the domains that disabled the placeholder IP(240.*), domains that are not in the dns_exclusion_list all have placeholder IP enabled and have turned on the resolve-on-remote setting.
+#
+# The udp_whitelist contains the destination UDP port, empty means including all the ports.
+#
+# The traffic to excluded_routes will not be handled by Quantumult.
+#
+
+[general]
+;server_check_url=http://www.google.com/generate_204
+;network_check_url=http://bing.com/
+;geo_location_checker=http://www.example.com/json/, https://www.example.com/script.js
+;dns_exclusion_list=*.qq.com, qq.com
+;ssid_suspended_list=LINK_22E174, LINK_22E175
+;udp_whitelist=53, 123, 1900, 80-443
+;excluded_routes= 192.168.0.0/16, 172.16.0.0/12, 100.64.0.0/10, 10.0.0.0/8
+;icmp_auto_reply=true
+
+#
+# The DNS servers fetched from current network will always be used for better performance.
+# Specially directly set 127.0.0.1 for a domain is not allowed in here. if you want some domain(eg: example.com) to be 127.0.0.1, just add “host, example.com, reject” to the “filter_local” section. The reject action will return DNS response with 127.0.0.1 to the query.
+#
+[dns]
+;server=223.5.5.5
+;server=114.114.114.114
+;server=119.29.29.29
+;server=8.8.8.8
+;server=8.8.4.4:53
+;server=/example1.com/8.8.4.4
+;server=/*.example2.com/223.5.5.5
+;server=/example4.com/[2001:4860:4860::8888]:53
+;address=/example5.com/192.168.16.18
+;address=/example6.com/[2001:8d3:8d3:8d3:8d3:8d3:8d3:8d3]
+
+#
+# static policy points to the server in candidates you manually selected.
+# available policy points to the first available server in candidates based on server_check_url(concurrent url latency test will be immediately launched when the policy has been triggered and the policy result is unavailable).
+# round-robin policy points to the next server in candidates for next connection.
+# ssid policy points to the server depending on the network environment.
+#
+[policy]
+available=Auto, 俄1_电信/联通/移动 - 单端口, 俄2_电信/联通|NF - 单端口, 俄3_电信/联通/移动 - 单端口, 德1_电信/移动/联通 |NF - 单端口, 悉尼-充值跨区用途-aws - 单端口, img-url=https://github.com/zealson/Zure/raw/master/IconSet/Auto.png
+static=SpeedTest, direct, proxy, reject, 香港, 港01_电信/联通/移动|NF_高荷载能力 - 单端口, img-url=https://github.com/zealson/Zure/raw/master/IconSet/Speedtest.png
+available=US, 美1_电信/联通/移动|NF - 单端口, 美2_电信/联通/移动|NF - 单端口, 美3_电信/联通/移动 - 单端口, 美4_电信/联通/移动 - 单端口, 美5_电信/联通/移动 - 单端口, img-url=https://github.com/zealson/Zure/raw/master/IconSet/United_States.png
+static=SG, 坡1_电信/移动 - 单端口, 坡2_电信/联通/移动|NF - 单端口, 坡3_电信/联通/移动|NF - 单端口, 坡4_电信/移动|NF - 单端口, img-url=https://github.com/zealson/Zure/raw/master/IconSet/Singapore.png
+static=JP, 免费_日1 - 单端口, 日1_电信/联通/移动|NF|DMM - 单端口, 日2_电信/联通/移动|NF|DMM - 单端口, 日3_电信/联通/移动|NF - 单端口, 日4_电信/联通/移动A|NF - 单端口, 日5_电信/联通/移动|NF - 单端口, img-url=https://github.com/zealson/Zure/raw/master/IconSet/Japan.png
+static=China, direct, img-url=https://github.com/zealson/Zure/raw/master/IconSet/China.png
+available=HK China, 港01_电信/联通/移动|NF_高荷载能力 - 单端口, 港02_电信/联通/移动|NF - 单端口, 港03_电信/联通/移动|NF - 单端口, 港04_电信/联通/移动|NF - 单端口, 港05_电信/联通/移动|NF - 单端口, 港06_电信/联通/移动_单端口|NF - 单端口, 港07_电信/联通/移动 - 单端口, 港08_电信/联通/移动|NF - 单端口, 港09_电信/联通/移动|NF - 单端口, img-url=https://github.com/zealson/Zure/raw/master/IconSet/Hong_Kong.png
+available=TW China, proxy, 台2_电信/联通/移动|NF|动画疯 - 单端口, 台3_电信/联通/移动|NF|动画疯 - 单端口, img-url=https://github.com/zealson/Zure/raw/master/IconSet/Taiwan.png
+static=YouTube, direct, proxy, reject, 港02_电信/联通/移动|NF - 单端口, 香港一年, img-url=https://github.com/zealson/Zure/raw/master/IconSet/YouTube.png
+static=ForeignMedia, direct, reject, 香港一年, 测试有效性, 台湾, HK China, 香港, 美国3, 美国, US, 美国2, img-url=https://github.com/zealson/Zure/raw/master/IconSet/ForeignMedia.png
+static=DomesticMedia, 台1_电信/联通/移动|NF|动画疯 - 单端口, 香港2, 港02_电信/联通/移动|NF - 单端口, direct, proxy, img-url=https://github.com/zealson/Zure/raw/master/IconSet/DomesticMedia.png
+static=Mail, proxy, 香港一年, img-url=https://github.com/zealson/Zure/raw/master/IconSet/Mail.png
+static=Unbreak, direct, img-url=https://github.com/zealson/Zure/raw/master/IconSet/Final.png
+available=KR, 韩1-AWS-1倍率 - 单端口, 韩2-AWS-1倍率 - 单端口, img-url=https://github.com/zealson/Zure/raw/master/IconSet/Korea.png
+static=Hulu, 美国3, US, 美国2, img-url=https://github.com/zealson/Zure/raw/master/IconSet/Hulu.png
+static=ViuTV, 香港2, 香港, 新加坡3, HK China, img-url=https://github.com/zealson/Zure/raw/master/IconSet/ViuTV.png
+static=Netflix, 香港一年, 坡2_电信/联通/移动|NF - 单端口, 日1_电信/联通/移动|NF|DMM - 单端口, 港01_电信/联通/移动|NF_高荷载能力 - 单端口, 台2_电信/联通/移动|NF|动画疯 - 单端口, 日3_电信/联通/移动|NF - 单端口, 美1_电信/联通/移动|NF - 单端口, img-url=https://github.com/zealson/Zure/raw/master/IconSet/Netflix.png
+static=Global, proxy, direct, 香港一年, img-url=https://github.com/zealson/Zure/raw/master/IconSet/Global.png
+static=Spotify, proxy, 美国2, img-url=https://github.com/zealson/Zure/raw/master/IconSet/Spotify.png
+static=Apple, direct, 香港一年, img-url=https://github.com/zealson/Zure/raw/master/IconSet/Apple.png
+static=Google, US, 香港一年, HK China, img-url=https://github.com/zealson/Zure/raw/master/IconSet/Google.png
+static=Telegram, 香港2, 新加坡3, 香港一年, US, JP, SG, img-url=https://github.com/zealson/Zure/raw/master/IconSet/Telegram.png
+static=Twitch, direct, proxy, HK China, img-url=https://github.com/zealson/Zure/raw/master/IconSet/Twitch.png
+static=PayPal, direct, proxy, img-url=https://github.com/zealson/Zure/raw/master/IconSet/PayPal.png
+static=Advertising, reject, img-url=https://github.com/zealson/Zure/raw/master/IconSet/Advertising.png
+static=Hijacking, reject, img-url=https://github.com/zealson/Zure/raw/master/IconSet/Hijacking.png
+;static=policy-name-1, Sample-A, Sample-B, Sample-C
+;available=policy-name-2, Sample-A, Sample-B, Sample-C
+;round-robin=policy-name-3, Sample-A, Sample-B, Sample-C
+;ssid=policy-name-4, Sample-A, Sample-B, LINK_22E171:Sample-B, LINK_22E172:Sample-C
+
+#
+# Params “tag” and “enabled” are optional.
+# The default sync interval for all kinds of remote resources is 24*60*60 seconds.
+#
+[server_remote]
+https://api.okab3.com/filter?type=ssr&url=https%3A%2F%2Fdukousubscribe.club%2Flink%2FRQjBCToPcQkwB3SL%3Fmu%3D1&regex=.*(%E5%BE%B7%7C%E4%BF%84%7C%E6%82%89%E5%B0%BC), tag=其他, enabled=true
+https://api.okab3.com/filter?type=ssr&url=https%3A%2F%2Fdukousubscribe.club%2Flink%2FRQjBCToPcQkwB3SL%3Fmu%3D1&regex=.*%E9%9F%A9, tag=韩国, enabled=true
+https://api.okab3.com/filter?type=ssr&url=https%3A%2F%2Fdukousubscribe.club%2Flink%2FRQjBCToPcQkwB3SL%3Fmu%3D1&regex=.*(%E5%8F%B0), tag=台湾, enabled=true
+https://api.okab3.com/filter?type=ssr&url=https%3A%2F%2Fdukousubscribe.club%2Flink%2FRQjBCToPcQkwB3SL%3Fmu%3D1&regex=.%2A%E5%9D%A1, tag=新加坡, enabled=true
+https://api.okab3.com/filter?type=ssr&url=https%3A%2F%2Fdukousubscribe.club%2Flink%2FRQjBCToPcQkwB3SL%3Fmu%3D1&regex=.%2A%E7%BE%8E, tag=美国, enabled=true
+https://api.okab3.com/filter?type=ssr&url=https%3A%2F%2Fdukousubscribe.club%2Flink%2FRQjBCToPcQkwB3SL%3Fmu%3D1&regex=.%2A%E6%97%A5, tag=日本, enabled=true
+https://api.okab3.com/filter?type=ssr&url=https%3A%2F%2Fdukousubscribe.club%2Flink%2FRQjBCToPcQkwB3SL%3Fmu%3D1&regex=.%2A%E6%B8%AF, tag=香港, enabled=true
+;https://raw.githubusercontent.com/crossutility/Quantumult-X/master/server.txt, tag=Sample-01
+;https://raw.githubusercontent.com/crossutility/Quantumult-X/master/server-complete.txt, tag=Sample-02, enabled=false
+
+#
+# Params “tag”, “force-policy” and “enabled” are optional.
+# When there is a force-policy, then the policy in filter of remote resource will be ignored and the force-policy will be used.
+#
+[filter_remote]
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Filter/Unbreak.list, tag=Unbreak, enabled=true
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Filter/Advertising.list, tag=Advertising, force-policy=reject, enabled=true
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Filter/Hijacking.list, tag=Hijacking, force-policy=reject, enabled=true
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Filter/Media/YouTube.list, tag=YouTube, enabled=true
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Filter/Media/ViuTV.list, tag=VIU, enabled=true
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Filter/Media/Netflix.list, tag=Netflix, enabled=true
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Filter/Media/Spotify.list, tag=Spotify, enabled=true
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Filter/Media/Hulu.list, tag=Hulu, enabled=true
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Filter/ForeignMedia.list, tag=ForeignMedia, enabled=true
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Filter/DomesticMedia.list, tag=DomesticMedia, enabled=true
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Filter/Google.list, tag=Google, enabled=true
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Filter/Mail.list, tag=Mail, enabled=true
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Filter/Telegram.list, tag=Telegram, enabled=true
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Filter/Media/Twitch.list, tag=Twitch, enabled=true
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Filter/PayPal.list, tag=PayPal, enabled=true
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Filter/Speedtest.list, enabled=true
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Filter/Global.list, tag=Global, enabled=true
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Filter/Apple.list, tag=Apple, enabled=true
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Filter/China.list, tag=China, enabled=true
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Filter/LAN.list, tag=LAN, force-policy=direct, enabled=true
+
+#
+# Params “tag” and “enabled” are optional.
+#
+[rewrite_remote]
+https://raw.githubusercontent.com/NobyDa/Script/master/QuantumultX/Rewrite_lhie1.conf, enabled=true
+https://raw.githubusercontent.com/NobyDa/Script/master/QuantumultX/Js.conf, enabled=true
+https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/X/Rewrite.conf, enabled=true
+https://raw.githubusercontent.com/crossutility/Quantumult-X/master/sample-import-rewrite.txt, tag=Sample, enabled=true
+
+#
+# Only obfs=http, obfs=ws, obfs=wss can have optional “obfs-uri” field.
+# When using obfs=ws and obfs=wss the server side must be deployed by V2Ray(protocol shadowsocks) NOT v2ray-plugin, and the method only can be one of V2Ray supported methods.
+#
+[server_local]
+
+
+shadowsocks=172.105.113.22:8099, method=aes-256-cfb, password=eIW0Dnk69454e6nSwuspv9DmS201tQ0D, fast-open=false, udp-relay=false, tag=新加坡3
+
+shadowsocks=209.58.188.157:8099, method=aes-256-cfb, password=eIW0Dnk69454e6nSwuspv9DmS201tQ0D, fast-open=false, udp-relay=false, tag=香港2
+
+shadowsocks=43.249.37.71:8099, method=aes-256-cfb, password=eIW0Dnk69454e6nSwuspv9DmS201tQ0D, fast-open=false, udp-relay=false, tag=香港
+
+shadowsocks=162.220.51.58:8099, method=aes-256-cfb, password=eIW0Dnk69454e6nSwuspv9DmS201tQ0D, fast-open=false, udp-relay=false, tag=US - Phoenix #1
+
+shadowsocks=45.56.83.105:8099, method=aes-256-cfb, password=eIW0Dnk69454e6nSwuspv9DmS201tQ0D, fast-open=false, udp-relay=false, tag=测试有效性
+
+shadowsocks=69.30.201.82:8099, method=aes-256-cfb, password=eIW0Dnk69454e6nSwuspv9DmS201tQ0D, fast-open=false, udp-relay=false, tag=美国3
+
+shadowsocks=50.7.12.147:8099, method=aes-256-cfb, password=eIW0Dnk69454e6nSwuspv9DmS201tQ0D, fast-open=false, udp-relay=false, tag=美国2
+
+shadowsocks=185.186.245.44:8099, method=aes-256-cfb, password=eIW0Dnk69454e6nSwuspv9DmS201tQ0D, fast-open=false, udp-relay=false, tag=荷兰
+
+shadowsocks=210.59.240.219:8099, method=aes-256-cfb, password=eIW0Dnk69454e6nSwuspv9DmS201tQ0D, fast-open=false, udp-relay=false, tag=台湾
+
+shadowsocks=172.105.193.166:8099, method=aes-256-cfb, password=eIW0Dnk69454e6nSwuspv9DmS201tQ0D, fast-open=false, udp-relay=false, tag=日本
+
+shadowsocks=45.79.91.64:8099, method=aes-256-cfb, password=eIW0Dnk69454e6nSwuspv9DmS201tQ0D, fast-open=false, udp-relay=false, tag=美国
+
+
+shadowsocks=149.129.114.232:80, method=chacha20, password=505822845, ssr-protocol=auth_sha1_v4, obfs=http_simple, obfs-host=lt.hn.189.cn:1082 port, fast-open=false, udp-relay=false, tag=香港一年
+
+;shadowsocks=a.example.com:80, method=chacha20, password=pwd, obfs=http, obfs-host=bing.com, obfs-uri=/resource/file, fast-open=false, udp-relay=false, server_check_url=http://www.apple.com/generate_204, tag=Sample-A
+;shadowsocks=b.example.com:80, method=chacha20, password=pwd, obfs=http, obfs-host=bing.com, obfs-uri=/resource/file, fast-open=false, udp-relay=false, tag=Sample-B
+;shadowsocks=c.example.com:443, method=chacha20, password=pwd, obfs=tls, obfs-host=bing.com, fast-open=false, udp-relay=false, tag=Sample-C
+;shadowsocks=d.example.com:80, method=chacha20, password=pwd, obfs=ws, obfs-host=bing.com, obfs-uri=/ws, fast-open=false, udp-relay=false, tag=Sample-D
+;shadowsocks=e.example.com:80, method=chacha20, password=pwd, obfs=ws, obfs-host=bing.com, fast-open=false, udp-relay=false, tag=Sample-E
+;shadowsocks=f.example.com:443, method=chacha20, password=pwd, obfs=wss, obfs-host=bing.com, obfs-uri=/ws, fast-open=false, udp-relay=false, tag=Sample-F
+;shadowsocks=g.example.com:443, method=chacha20, password=pwd, ssr-protocol=auth_chain_b, ssr-protocol-param=def, obfs=tls1.2_ticket_fastauth, obfs-host=bing.com, tag=Sample-G
+
+[filter_local]
+host-keyword, ycomesc, reject
+host, liking.my10api.com, HK China
+geoip, kr, KR
+host-keyword, sugrec, reject
+host-keyword, 习近平, reject
+host-keyword, %e4%b9%a0%e8%bf%91%e5%b9%b3, reject
+host, mbd.baidu.com, reject
+host, 2fmbd.baidu.com, reject
+host, baijiahao.baidu.com, reject
+host, 2fmbd.baidu.com, reject
+host-keyword, baijiahao, reject
+host, sm.baidu.com, reject
+host, haokan.baidu.com, reject
+host, mbd.baidu.com, reject
+host, ss2.baidu.com, reject
+host, ss0.baidu.com, reject
+host, ss1.baidu.com, reject
+host, hpd.baidu.com, reject
+host, feed.baidu.com, reject
+host, feed.baidu.com, reject
+host, sm.bdimg.com, reject
+host-keyword, ss1*ss2*ss0*bdstatic*bdimg*bdstatic*hpq, reject
+host-keyword, ss1, reject
+host-keyword, plus_logo_web, reject
+host-keyword, bcebos, reject
+host-suffix, bdstatic.com, reject
+host, img.ddrk.me, US
+host, ddrk.me, US
+host-keyword, templets, reject
+host, program-image.cloud.sbs.co.kr, KR
+host, play.sbs.co.kr, KR
+host, apis.sbs.co.kr, KR
+host-keyword, sbs.co, KR
+host, csi.gstatic.com, KR
+host-suffix, dawin.tv, KR
+host, meetagit.github.io, direct
+host, img2.sbs.co.kr, KR
+host, raw.githubusercontent.com, direct
+host-keyword, medialog, KR
+host-keyword, githubusercontent, direct
+host-keyword, kr, KR
+host-keyword, dawin, KR
+host, smrmembers-smr.smartmediarep.com, reject
+host-keyword, smartmediarep, reject
+host-suffix, smartmediarep.com, reject
+host-keyword, smrmembers, reject
+host-keyword, adtracking, reject
+host, olaplog.smartmediarep.com, reject
+host, ad.smartmediarep.com, reject
+host, ad.xc.netinsight.co.kr, reject
+host, smrmembers-smr.smartmediarep.com, reject
+host, ad.xc.netinsight.co.kr, reject
+host, ad.smartmediarep.com, reject
+host, olaplog.smartmediarep.com, reject
+host-keyword, sbs, KR
+host, voddown.sbs.co.kr, KR
+host, smrmembers-smr.smartmediarep.com, reject
+host, adtracking.smartmediarep.com, reject
+host, app-measurement.com, KR
+host, nitmus.fms.wecandeo.com, reject
+host, googleads.g.doubleclick.net, reject
+host, ad.imp.joins.com, reject
+host, extshort.weixin.qq.com, direct
+host, googleads.g.doubleclick.net, reject
+host-keyword, jtbc, KR
+host, now-api.jtbc.joins.com, KR
+host, interface.91apiapi.com, direct
+host, www.openarkcompiler.cn, reject
+host-keyword, openarkcompiler, reject
+host-keyword, baijiahao, reject
+host, baijiahao.baidu.com, reject
+host, baike.baidu.com, reject
+host, baidu.com, reject
+host-suffix, 360.cn, reject
+host-keyword, 360, reject
+host, m.vmall.com, reject
+host-keyword, huawei, reject
+host, nstatic.jtbc.joins.com, KR
+host, api99.chinanb.work, China
+host, liking.my10api.com, direct
+host, pic.1024av.cc, direct
+host, smarturl.it, US
+host, one.my10api.com, China
+host, cws-hulu.conviva.com, ForeignMedia
+host-keyword, watchxnx, proxy
+host-suffix, watchxnx.com, proxy
+host-suffix, baiduwp.com, China
+host, e.crashlytics.com, direct
+host-suffix, savideo.com, proxy
+host, dl89.youtubeconverter.io, proxy
+host, s.youtube.com, Google
+host, m.ifun.tv, ForeignMedia
+host, www.dnvod.tv, ForeignMedia
+host, www.dnvod.tv, proxy
+host, www-v2ex-com.cdn.ampproject.org, Google
+host, i.gtimg.cn, China
+host, w.mail.qq.com, China
+host, mqqeve.beacon.qq.com, China
+host, cdn.ark.qq.com, China
+host, p.doras.log.vcinema.cn, China
+host, c1.cykosk.vcinema.com.cn, China
+host, p.doras.api.vcinema.cn, China
+host, limaomecanico.com.br, Google
+host, mil.news.sina.com.cn, China
+host, mail.google.com, Mail
+host, inbox.google.com, Mail
+host, people-pa.googleapis.com, Mail
+host, oauthaccountmanager.googleapis.com, Mail
+host, mobileanalytics.us-east-1.amazonaws.com, Hulu
+;user-agent, ?abc*, proxy
+;host, www.google.com, proxy
+;host-keyword, adsite, reject
+;host-suffix, googleapis.com, proxy
+ip-cidr, 10.0.0.0/8, direct
+ip-cidr, 127.0.0.0/8, direct
+ip-cidr, 172.16.0.0/12, direct
+ip-cidr, 192.168.0.0/16, direct
+ip-cidr, 224.0.0.0/24, direct
+geoip, cn, direct
+final, direct
+
+#
+# The “reject” returns HTTP status code 404 with no content.
+# The “reject-200” returns HTTP status code 200 with no content.
+# The “reject-img” returns HTTP status code 200 with content of 1px gif.
+# The “reject-dict” returns HTTP status code 200 with content of empty json object.
+# The “reject-array” returns HTTP status code 200 with content of empty json array.
+# The “request-header” works for all the http headers not just one single header, so you can match two or more headers including CRLF in one regular expression.
+# The length and encoding related HTTP header fields will be automatically processed by Quantumult if the “rewrite” is body related, so you should not handle them by yourself.
+# When using javascript in rewrite, you can use those objects: $request, $response, $notify(title, subtitle, message), console.log(message) and Quantumult’s built-in objects all have prefix “$”.
+# Supports: $request.scheme, $request.method, $request.url, $request.path, $request.body, $request.headers, $response.statusCode, $response.headers, $response.body
+# The $notify(title, subtitle, message) will post iOS notifications if Quantumult notification has been enabled.
+# The console.log(message)  will output logs to Quantumult log file if the log level is “debug”.
+#
+[rewrite_local]
+#91
+http:\/\/imgpublic\.ycomesc\.com\/img\.ads\/91_ads\.jpeg url reject-img
+#百毒
+https:\/\/m.baidu\.com\/static\/index\/plus\/plus_logo_web\.png url reject-img
+^https?:\/\/pan\.baidu\.com\/s\/(.+) url 302 alook://pan.baiduwp.com/s/$1
+^https?://(www.)?baidu.com url 302 https://m.baidu.com/?tn=simple&from=1011851z
+#酷我
+^https?:\/\/.*\.kuwo\.cn/vip/v2/user/vip url script-response-body https://raw.githubusercontent.com/NobyDa/Script/master/QuantumultX/File/kw1.js
+^https?://vip1\.kuwo\.cn/vip/spi/mservice url script-response-body https://raw.githubusercontent.com/NobyDa/Script/master/QuantumultX/File/kw2.js
+^https?:\/\/musicpay\.kuwo\.cn/ url response-body “vip” response-body “song”
+#漫画台
+^https?:\/\/getconfig-globalapi\.65sy\.com\/app_api\/v5\/getcomicinfo_body\/ url script-response-body mht1.js
+#bili
+^https?:\/\/api\.bilibili\.com\/pgc\/player\/api\/playurl url script-response-body https://raw.githubusercontent.com/NobyDa/Script/master/QuantumultX/File/bilifj.js
+#低端影视
+https:\/\/ddrk\.oss-cn-shanghai\.aliyuncs.com\/img\/cover\.png url reject-img
+http:\/\/img\.ddrk\.me\/ad190824_m\.jpg url reject-img
+http:\/\/img\.ddrk\.me\/ad190824\.jpg url reject-img
+http:\/\/ddrk\.me\/image\/logo_footer\.png url reject-img
+http:\/\/ddrk\.me\/wp-content\/plugins\/advanced-floating-content-lite\/public\/images\/close\.png url reject-img
+#奈菲影视
+https:\/\/www\.nfmovies\.com\/uploads\/images\/play\.jpg url reject-img
+^https:\/\/www\.nfmovies\.com\/templets\/default\/images\/logos\/min\/06\.png url reject-img
+^https:\/\/www\.nfmovies\.com\/templets\/default\/images\/logos\/06\.png url reject-img
+^http://example\.com/resource1/3/ url reject-200
+^http://example\.com/resource1/4/ url reject-dict
+^http://example\.com/resource1/5/ url reject-array
+^https?:\/\/pan\.baidu\.com\/s\/(.+) url 302 alook://pan.baiduwp.com/s/$1
+^http://example\.com/resource2/ url 302 http://example.com/new-resource2/
+^http://example\.com/resource3/ url 307 http://example.com/new-resource3/
+^http://example\.com/resource4/ url request-header (\r\n)User-Agent:.+(\r\n) request-header $1User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36$2
+^http://example\.com/resource5/ url response-body “info”:\[.+\],”others” response-body “info”:[],”others”
+;^http://example\.com/resource6/ url script-response-body https://example.com/script.js
+
+[mitm]
+passphrase = 9F91E709
+p12 = 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
+;passphrase =
+;p12 =
+;skip_validating_cert = false
+;force_sni_domain_name = false
+hostname = *.kuwo.cn,getconfig-globalapi.65sy.com, m.poizon.com*.example.com, *.sample.com api.weibo.cn,api.bilibili.com,mapi.weibo.com, *.uve.weibo.com, mp.weixin.qq.com, api.bilibili.com, app.bilibili.com, *.zhihu.com, aweme*.snssdk.com, n￼fmovies.com*.api.vcinema.cn, api2.gkaorlz.com, *.kuwo.cn, ios.xiaoxiaoapps.com, api*.tiktokv.com, *.musical.ly, api*.amemv.com, mjappaz.yefu365.com, *.iydsj.com,*.k.sohu.com,*.kakamobi.cn,*.kingsoft-office-service.com,*.meituan.net,*.musical.ly,*.ofo.com,*.pstatp.com,*.snssdk.com,*.nfmovies.com,*.uve.weibo.com,*.ydstatic.com,*.youtube.com,a.apicloud.com,a.applovin.com,a.qiumibao.com,a.sfansclub.com,a.wkanx.com,acs.m.taobao.com,act.vip.iqiyi.com,api.chelaile.net.cn,api.daydaycook.com.cn,nfmovies.com,api.huomao.com,api.intsig.net,api.jr.mi.com,api.jxedt.com,api.kkmh.com,api.m.jd.com,api.mgzf.com,api.psy-1.com,api.rr.tv,api.smzdm.com,api.tv.sohu.com,api.vistopia.com.cn,api.wallstreetcn.com,api.weibo.cn,api.xiachufang.com,api.zhihu.com,api.zhuishushenqi.com,api*.tiktokv.com,api5.futunn.com,api-mifit*.huami.com,api-release.wuta-cam.com,app.58.com,app.api.ke.com,app.bilibili.com,api.douban.com,app.mixcapp.com,app.variflight.com,app.wy.guahao.com,app.yinxiang.com,b.zhuishushenqi.com,c.m.163.com,cap.caocaokeji.cn,capi.luckincoffee.com,capi.mwee.cn,cdn.moji.com,channel.beitaichufang.com,client.mail.163.com,cms.daydaycook.com.cn,consumer.fcbox.com,creditcard.ecitic.com,daoyu.sdo.com,dxy.com,e.dangdang.com,gateway.shouqiev.com,gw-passenger.01zhuanche.com,huichuan.sm.cn,i.weread.qq.com,i.ys7.com,iapi.bishijie.com,iface.iqiyi.com,ih2.ireader.com,img01.10101111cdn.com,img*.doubanio.com,img.jiemian.com,interface.music.163.com,ios.lantouzi.com,ios.wps.cn,m*.amap.com,m.client.10010.com,m.creditcard.ecitic.com,m.ibuscloud.com,m.yap.yahoo.com,mapi.mafengwo.cn,mapi.weibo.com,media.qyer.com,mlife.cmbchina.com,mlife.jf365.boc.cn,mob.mddcloud.com.cn,mobile-api2011.elong.com,mp.weixin.qq.com,mrobot.pcauto.com.cn,mrobot.pconline.com.cn,ms.jr.jd.com,msspjh.emarbox.com,newclient.map.baidu.com,newsso.map.qq.com,nnapp.cloudbae.cn,open.qyer.com,pic1cdn.cmbchina.com,pic*.chelaile.net,portal-xunyou.qingcdn.com,pss.txffp.com,r.inews.qq.com,render.alipay.com,resrelease.wuta-cam.com,richmanapi.jxedt.com,rtbapi.douyucdn.cn,service.4gtv.tv,smkmp.96225.com,slapi.oray.net,snailsleep.net,sp.kaola.com,ssl.kohsocialapp.qq.com,static.vuevideo.net,static1.keepcdn.com,status.boohee.com,support.you.163.com,thor.weidian.com,tiku.zhan.com,www.dandanzan.com,www.flyertea.com,www.zhihu.com,www.zybang.com,youtubei.googleapis.com,zhidao.baidu.com,pan.baidu.com,ddrk.oss-cn-shanghai.aliyuncs.com,b.bdstatic.com,mms-secr.cdn.bcebos.com,m.baidu.com,ss1.baidu.com,ss0.baidu.com,ss2.baidu.com,s.bdstatic.com,sm.bdimg.com,feed.baidu.com,gss0.bdstatic.com,hm.baidu.com,phd.baidu.com,mbd.baidu.com,haokan.baidu.com,sm.baidu.com,baijiahao.baidu.com,2Fmbd.baidu.com,www.baidu.com
